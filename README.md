@@ -25,8 +25,8 @@ Add the dependencies
 /*global app: true*/
 var app = angular.module('resourcesApp', [
 ...
-'ngInvocationHandler.core',
-'ngInvocationHandler.ui' // optional
+'ngIH.core',
+'ngIH.ui' // optional
 ]);
 ```
 
@@ -35,14 +35,14 @@ If you like to display the error message within your app, also include the ui mo
 Configure the service to be handled:
 
 ```
-app.config(function ($provide, errorHandlerServiceProvider, errorHandlerConfig) {
+app.config(function ($provide, ngIHServiceProvider, ngIHConfig) {
 'use strict';
 
 // enable UI feedback attach
-errorHandlerConfig.feedbackAttach = true;
-errorHandlerConfig.customErrorHandler = 'errorHandlingService';
+ngIHConfig.feedbackAttach = true;
+ngIHConfig.customErrorHandler = 'errorHandlingService';
 // decorate the mentioned [services] with automatic error handling.
-errorHandlerServiceProvider.decorate($provide, ['eventService']);
+ngIHServiceProvider.decorate($provide, ['eventService']);
 });
 
 ```

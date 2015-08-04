@@ -62,7 +62,7 @@ core.provider('ngIHService', function () {
             });
         },
 
-        $get: function ($log, $injector, feedbackUI, ngIHConfig, httpErrors) {
+        $get: ["$log", "$injector", "feedbackUI", "ngIHConfig", "httpErrors", function ($log, $injector, feedbackUI, ngIHConfig, httpErrors) {
 
             var handler = {
 
@@ -157,7 +157,7 @@ core.provider('ngIHService', function () {
             };
 
             return handler;
-        }
+        }]
     };
 });
 
@@ -174,7 +174,7 @@ core.factory('httpErrorInterceptor', function () {
     };
 });
 
-core.config(function ($provide, $httpProvider) {
+core.config(["$provide", "$httpProvider", function ($provide, $httpProvider) {
     'use strict';
 
     // adding interceptor, e.g. for timeouts ...
@@ -186,11 +186,11 @@ core.config(function ($provide, $httpProvider) {
             $delegate(exception, cause);
         };
     }]);
-});
+}]);
 
 // UI
 
-ui.factory('feedbackUI', function (ngIHConfig, $timeout, $rootScope) {
+ui.factory('feedbackUI', ["ngIHConfig", "$timeout", "$rootScope", function (ngIHConfig, $timeout, $rootScope) {
         'use strict';
 
         // PUBLIC API
@@ -215,10 +215,10 @@ ui.factory('feedbackUI', function (ngIHConfig, $timeout, $rootScope) {
                 });
             }
         };
-    }
+    }]
 );
 
-ui.directive('uiErrorHandler', function ($rootScope, ngIHConfig) {
+ui.directive('uiErrorHandler', ["$rootScope", "ngIHConfig", function ($rootScope, ngIHConfig) {
     'use strict';
 
     return {
@@ -228,9 +228,9 @@ ui.directive('uiErrorHandler', function ($rootScope, ngIHConfig) {
             $element.append(ngIHConfig.template);
         }
     };
-});
+}]);
 
-ui.run(function ($rootScope, $document, ngIHConfig, $templateCache) {
+ui.run(["$rootScope", "$document", "ngIHConfig", "$templateCache", function ($rootScope, $document, ngIHConfig, $templateCache) {
     'use strict';
 
 
@@ -249,4 +249,4 @@ ui.run(function ($rootScope, $document, ngIHConfig, $templateCache) {
         ngIHConfig.templateUrl = '$$angular-errorhandler-template$$';
         $templateCache.put(ngIHConfig.templateUrl, ngIHConfig.template);
     }
-});
+}]);

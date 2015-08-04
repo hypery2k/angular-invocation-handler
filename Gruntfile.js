@@ -171,7 +171,7 @@ module.exports = function (grunt) {
         uglify: {
             dist: {
                 files: {
-                    '<%= yeoman.dist %>/angular-errorhandler.min.js': ['<%= yeoman.dist %>/angular-errorhandler.js']
+                    '<%= yeoman.dist %>/angular-invocation-handler.min.js': ['<%= yeoman.dist %>/angular-invocation-handler.js']
                 }
             }
         },
@@ -180,8 +180,8 @@ module.exports = function (grunt) {
                 separator: ';',
             },
             dist: {
-                src: ['<%= yeoman.src %>/angular-errorhandler.js'],
-                dest: '<%= yeoman.tmp %>/concat/scripts/angular-errorhandler.js',
+                src: ['<%= yeoman.src %>/angular-invocation-handler.js'],
+                dest: '<%= yeoman.tmp %>/concat/scripts/angular-invocation-handler.js',
             }
         },
         // ng-annotate tries to make the code safe for minification automatically
