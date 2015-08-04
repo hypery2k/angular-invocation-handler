@@ -4,6 +4,7 @@
 > e.g. for saving to a remote service or for displaying
 
 [![Build Status](https://travis-ci.org/hypery2k/angular-invocation-handler.svg?branch=master)](https://travis-ci.org/hypery2k/angular-invocation-handler)
+[![Build status](https://ci.appveyor.com/api/projects/status/qbdypq5n7p4x3i78?svg=true)](https://ci.appveyor.com/project/hypery2k/angular-invocation-handler)
 ![Bower version](https://badge.fury.io/hypery2k/angular-invocation-handler.svg)
 [![ NPM devDependency Status](https://david-dm.org/hypery2k/angular-invocation-handler/dev-status.svg)](https://david-dm.org/hypery2k/angular-invocation-handler#info=devDependencies)
 
