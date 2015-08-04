@@ -1,0 +1,31 @@
+{
+  "name": "angular-invocation-handler",  
+  "version": "0.1.0-dev",
+  "description": "Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user",
+  "homepage": "https://github.com/hypery2k/angular-invocation-handler",
+  "authors": [
+    "Martin Reinhardt <contact@martinreinhardt-online.de>"
+  ],
+  "license": "MIT",
+  "main": "./dist/angular-invocation-handler.js",
+  "keywords": [
+    "angular-invocation-handler",
+    "angular-errorhandler",
+    "angular",
+    "AngularJS",
+    "error"
+  ],
+  "dependencies": {
+    "angular": "^1.2.12"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.2.12"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
