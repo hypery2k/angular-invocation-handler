@@ -21,6 +21,26 @@ module.exports = function (grunt) {
 
     // Define the configuration for all the tasks
     grunt.initConfig({
+        
+        pkg: grunt.file.readJSON('package.json'),
+         banner: '/* <%= pkg.name %> - version <%= pkg.version %>\n'+
+          ' * \n' +
+          ' * <%= grunt.template.today("dd-mm-yyyy") %>\n' +
+          ' * \n' +
+          ' * <%= pkg.description %>\n' +
+          ' * \n' +
+          ' * Copyright <%= grunt.template.today("yyyy") %>  - <%= pkg.authors.join(", ") %> */\n',
+         usebanner: {
+          build: {
+            options: {
+              position: 'top',
+              banner: '<%= banner %>'
+            },
+            files: {
+              src: [ 'dist/*.js' ]
+            }
+          }
+        },
 
         // Project settings
         yeoman: appConfig,
@@ -285,7 +305,8 @@ module.exports = function (grunt) {
         'autoprefixer',
         'concat',
         'ngAnnotate',
-        'uglify'
+        'uglify',
+        'usebanner'
     ]);
 
     grunt.registerTask('debug', [

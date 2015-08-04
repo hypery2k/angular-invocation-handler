@@ -1,12 +1,3 @@
-/*
- * angular-invocation-handler
- * Copyright (C)2015 Martin Reinhardt
- * https://github.com/hypery2k/angular-invocation-handler
- *
- * Version: 0.1.0
- * License: MIT
- */
-
 var core = angular.module('ngIH.core', []);
 var ui = angular.module('ngIH.ui', []);
 

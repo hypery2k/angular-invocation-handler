@@ -1,11 +1,10 @@
-/*
- * angular-invocation-handler
- * Copyright (C)2015 Martin Reinhardt
- * https://github.com/hypery2k/angular-invocation-handler
- *
- * Version: 0.1.0
- * License: MIT
- */
+/* angular-invocation-handler - version 0.1.2-dev
+ * 
+ * 04-08-2015
+ * 
+ * Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user
+ * 
+ * Copyright 2015  - Martin Reinhardt <contact@martinreinhardt-online.de> */
 
 var core = angular.module('ngIH.core', []);
 var ui = angular.module('ngIH.ui', []);
