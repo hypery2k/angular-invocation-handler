@@ -23,13 +23,13 @@ module.exports = function (grunt) {
     grunt.initConfig({
         
         pkg: grunt.file.readJSON('package.json'),
-         banner: '/* <%= pkg.name %> - version <%= pkg.version %>\n'+
-          ' * \n' +
-          ' * <%= grunt.template.today("dd-mm-yyyy") %>\n' +
+         banner: '/* <%= pkg.name %> - Version <%= pkg.version %>, <%= grunt.template.today("dd-mm-yyyy") %>\n' +
           ' * \n' +
           ' * <%= pkg.description %>\n' +
           ' * \n' +
-          ' * Copyright <%= grunt.template.today("yyyy") %>  - <%= pkg.authors.join(", ") %> */\n',
+          ' * Copyright <%= grunt.template.today("yyyy") %>  - <%= pkg.authors.join(", ") %>\n'+
+          ' * License <%= pkg.license %>\n'+
+          ' */',
          usebanner: {
           build: {
             options: {
