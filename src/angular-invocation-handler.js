@@ -3,20 +3,17 @@ var ui = angular.module('ngIH.ui', []);
 
 // Core
 
-// TODO move to config for translation
-core.constant('httpErrors', {
-    0: 'Der Server ist nicht erreichbar..',
-    404: 'Dieser Dienst existiert nicht.',
-    405: 'Zugriffsfehler.',
-    500: 'Unbekannte Serverfehler.'
-});
-
 core.constant('ngIHConfig', {
     model: {
         alerts: 'alerts'
     },
+    httpErrors: {
+        0: 'Der Server ist nicht erreichbar..',
+        404: 'Dieser Dienst existiert nicht.',
+        405: 'Zugriffsfehler.',
+        500: 'Unbekannte Serverfehler.'
+    },
     customErrorHandler: false,
-    templateUrl: 'holi-error-handler-ui/error-handler-config.ng.html',
     template: '<alert ng-repeat=\"alert in alerts\" type=\"{{alert.type}}\" close=\"alerts.splice($index, 1)\">{{::alert.msg}}</alert>',
     feedbackAttach: false
 });
@@ -53,7 +50,7 @@ core.provider('ngIHService', function () {
             });
         },
 
-        $get: function ($log, $injector, feedbackUI, ngIHConfig, httpErrors) {
+        $get: function ($log, $injector, feedbackUI, ngIHConfig) {
 
             var handler = {
 
@@ -83,7 +80,7 @@ core.provider('ngIHService', function () {
                         } else {
                             if (err && !angular.isUndefined(err.status)) {
                                 // A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
-                                err = httpErrors[err.status];
+                                err = ngIHConfig.httpErrors[err.status];
                             } else if (err && err.message) {
                                 // Exceptions are unwrapped.
                                 err = err.message;
