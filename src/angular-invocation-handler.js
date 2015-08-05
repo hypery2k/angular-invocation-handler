@@ -13,6 +13,7 @@ core.constant('ngIHConfig', {
         405: 'Zugriffsfehler.',
         500: 'Unbekannte Serverfehler.'
     },
+    redirect: false,
     customErrorHandler: false,
     template: '<alert ng-repeat=\"alert in alerts\" type=\"{{alert.type}}\" close=\"alerts.splice($index, 1)\">{{::alert.msg}}</alert>',
     feedbackAttach: false
@@ -50,7 +51,7 @@ core.provider('ngIHService', function () {
             });
         },
 
-        $get: function ($log, $injector, feedbackUI, ngIHConfig) {
+        $get: function ($log, $injector, $location, feedbackUI, ngIHConfig) {
 
             var handler = {
 
@@ -62,8 +63,7 @@ core.provider('ngIHService', function () {
                     // This is a very limited error handler... you would probably want to check for user-friendly error messages
                     // that were returned by the server, etc, etc, etc. Our original code contains a lot of checks and handling
                     // of error messages to create the "perfect" error message for our users, you should probably do the same. :)
-                    if (err) {
-                                              
+                    if (err) {                                              
                         var errorDetails = {
                             error: err,
                             timestamp: new Date(),
@@ -72,6 +72,12 @@ core.provider('ngIHService', function () {
                                 navigatorUserAgent: navigator.userAgent,
                                 navigatorPlatform: navigator.platform
                             }
+                        }
+                        
+                        
+                        if (ngIHConfig.redirect) {
+                            $log.info('Redirect to /' + err.status + '.html')
+                            $location.path('/' + err.status + '.html');
                         }
 
                         if (ngIHConfig.customErrorHandler) {

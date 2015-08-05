@@ -38,8 +38,11 @@ Configure the service to be handled:
 app.config(function ($provide, ngIHServiceProvider, ngIHConfig) {
 'use strict';
 
-// enable UI feedback attach
+// enable UI feedback attach, default false
 ngIHConfig.feedbackAttach = true;
+// redirect to static error pages, e.g. 404 --> /404.html, default false
+ngIHConfig.redirect = true;
+// adding custom error handler, default is disabled
 ngIHConfig.customErrorHandler = 'errorHandlingService';
 // decorate the mentioned [services] with automatic error handling.
 ngIHServiceProvider.decorate($provide, ['eventService']);
