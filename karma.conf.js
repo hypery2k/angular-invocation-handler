@@ -24,6 +24,7 @@ module.exports = function (config) {
             'bower_components/angular/angular.js',
             'bower_components/angular-mocks/angular-mocks.js',
             "src/**/*.js",
+            "test/app/**/*.js",
             "test/mocks/**/*.js",
             "test/specs/**/*.js"
         ],
@@ -59,7 +60,7 @@ module.exports = function (config) {
         ],
 
         junitReporter: {
-            outputDir: 'docs/surefire-reports',// results will be saved as $outputDir/$browserName.xml
+            outputDir: 'dist/test-report',// results will be saved as $outputDir/$browserName.xml
             suite: 'angular-errorhandler'
         },
 

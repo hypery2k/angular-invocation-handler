@@ -1,5 +1,5 @@
 /*global mockApp: true*/
-var app = angular.module('appMock', [
+var app = angular.module('appDefaultConfig', [
     'ngIH.core',
     'ngIH.ui'
 ]);
@@ -7,9 +7,6 @@ var app = angular.module('appMock', [
 app.config(function ($provide, ngIHServiceProvider, ngIHConfig) {
     'use strict';
 
-    // enable UI feedback attach
-    ngIHConfig.feedbackAttach = true;
-    ngIHConfig.customerErrorHandler = 'myErrorHandlingService';
     // decorate the mentioned [services] with automatic error handling.
     ngIHServiceProvider.decorate($provide, ['eventService']);
 });
