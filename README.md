@@ -16,12 +16,13 @@ So instead of surfacing the log it would be cool to manage them at a central pla
 
 Install this module:
 
-```
+```bash
 bower install angular-invocation-handler --save
 ```
 
 Add the dependencies
-```
+
+```javascript
 /*global app: true*/
 var app = angular.module('resourcesApp', [
 ...
@@ -34,7 +35,7 @@ If you like to display the error message within your app, also include the ui mo
 
 Configure the service to be handled:
 
-```
+```javascript
 app.config(function ($provide, ngIHServiceProvider, ngIHConfig) {
   'use strict';
 
@@ -52,7 +53,7 @@ app.config(function ($provide, ngIHServiceProvider, ngIHConfig) {
 
 The customized error handling service looks like this:
 
-```
+```javascript
 app.factory('errorHandlingService', function ($log, $translate, blockUI) {
     'use strict';
 
