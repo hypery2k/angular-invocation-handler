@@ -8,11 +8,11 @@
 [![Bower version](https://badge.fury.io/bo/angular-invocation-handler.svg)](http://badge.fury.io/bo/angular-invocation-handler)
 [![ NPM devDependency Status](https://david-dm.org/hypery2k/angular-invocation-handler/dev-status.svg)](https://david-dm.org/hypery2k/angular-invocation-handler#info=devDependencies)
 
-##### Reasons to use
+## Reasons to use
 It's anyoing to handle all errors in controller and service and also very defective.
 So instead of surfacing the log it would be cool to manage them at a central place and maybe store them via on a backend service
 
-##### Usage
+## Usage
 
 Install this module:
 
@@ -102,6 +102,15 @@ app.factory('errorHandlingService', function ($log, $translate, blockUI) {
     };
 });
 ```
+
+
+
+## WIP
+- [x] Library core
+- [ ] Write unit tests
+- [ ] Write e2e-tests
+- [ ] Write an API doc
+- [ ] Provide complete examples
 
 ### About
 
