@@ -36,18 +36,70 @@ Configure the service to be handled:
 
 ```
 app.config(function ($provide, ngIHServiceProvider, ngIHConfig) {
-'use strict';
+  'use strict';
 
-// enable UI feedback attach, default false
-ngIHConfig.feedbackAttach = true;
-// redirect to static error pages, e.g. 404 --> /404.html, default false
-ngIHConfig.redirect = true;
-// adding custom error handler, default is disabled
-ngIHConfig.customErrorHandler = 'errorHandlingService';
-// decorate the mentioned [services] with automatic error handling.
-ngIHServiceProvider.decorate($provide, ['eventService']);
+  // enable UI feedback attach, default false
+  ngIHConfig.feedbackAttach = true;
+  // redirect to static error pages, e.g. 404 --> /404.html, default false
+  ngIHConfig.redirect = true;
+  // adding custom error handler, default is disabled
+  ngIHConfig.customErrorHandler = 'errorHandlingService';
+  // decorate the mentioned [services] with automatic error handling.
+  ngIHServiceProvider.decorate($provide, ['eventService']);
 });
 
+```
+
+The customized error handling service looks like this:
+
+```
+app.factory('errorHandlingService', function ($log, $translate, blockUI) {
+    'use strict';
+
+    function buildValidationMessages(error, msg, callback, i) {
+        var errorDetails = error.data[i];
+        $translate('VALIDATION_ERROR_' + errorDetails.messageTemplate).then(function (translatedValue) {
+            msg = msg + ' ' + translatedValue;
+
+            // replace placeholder if set
+            if (errorDetails.propertyList) {
+                msg = msg.format(errorDetails.propertyList);
+            }
+
+            // callback when complete
+            if (i === error.data.length - 1) {
+                $log.debug(error.status + '=>' + msg);
+                callback(msg);
+            }
+        }, function (err) {
+            $log.error(err);
+            callback(msg);
+        });
+    }
+
+    return {
+        resolve: function (details, callback) {
+            if (details.error) {
+                var error = details.error;
+                // read by http code
+                $translate('HTTP_STATUS_CODE_' + error.status).then(function (translatedValue) {
+                    var msg = translatedValue;
+                    // handle violation errors
+                    if (error.status === 400 && error.data && error.data.length) {
+                        for (var i = 0; i < error.data.length; i++) {
+                            blockUI.stop();
+                            buildValidationMessages(error, msg, callback, i);
+                        }
+                    } else {
+                        blockUI.stop();
+                        $log.debug(error.status + '=>' + msg);
+                        callback(msg);
+                    }
+                });
+            }
+        }
+    };
+});
 ```
 
 ### About
