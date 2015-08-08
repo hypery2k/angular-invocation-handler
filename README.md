@@ -12,6 +12,13 @@
 It's anyoing to handle all errors in controller and service and also very defective.
 So instead of surfacing the log it would be cool to manage them at a central place and maybe store them via on a backend service
 
+## WIP
+- [x] Library core
+- [x] Write unit tests
+- [ ] Write e2e-tests
+- [ ] Write an API doc
+- [ ] Provide complete examples
+
 ## Usage
 
 Install this module:
@@ -102,15 +109,6 @@ app.factory('errorHandlingService', function ($log, $translate, blockUI) {
     };
 });
 ```
-
-
-
-## WIP
-- [x] Library core
-- [ ] Write unit tests
-- [ ] Write e2e-tests
-- [ ] Write an API doc
-- [ ] Provide complete examples
 
 ### About
 
