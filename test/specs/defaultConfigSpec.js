@@ -1,34 +1,35 @@
 describe('angular-invocation-handler with default config:', function () {
   'use strict';
 
-  // load the controller's module
-  beforeEach(module('appDefaultConfig'));
-
   // framework services
   var ngInvocationHandelerService,
     feedbackUIService,
   // app services
-    myiHService,
     busService,
     location,
     scope,
     httpBackend;
 
-  // Initialize the service
-  beforeEach(inject(function ($rootScope, $httpBackend, $location, ngIHService, feedbackUI, myErrorHandlingService, eventService) {
-    scope = $rootScope.$new();
-    httpBackend = $httpBackend;
-    location = $location;
-    ngInvocationHandelerService = ngIHService;
-    feedbackUIService = feedbackUI;
-    myiHService = myErrorHandlingService;
-    busService = eventService;
-    // create spies
-    spyOn(location, 'path');
-    spyOn(ngInvocationHandelerService, 'funcError');
-    spyOn(myiHService, 'resolve');
-    spyOn(feedbackUIService, 'appendErrorMsg');
-  }));
+  // setup
+  beforeEach(function () {
+  
+    module('appDefaultConfig');
+
+    // Initialize the service
+    inject(function ($rootScope, $httpBackend, $location, ngIHService, feedbackUI, eventService) {
+      scope = $rootScope.$new();
+      httpBackend = $httpBackend;
+      location = $location;
+      ngInvocationHandelerService = ngIHService;
+      feedbackUIService = feedbackUI;
+      busService = eventService;
+    });
+
+    // init spys
+    spyOn(location, 'path').and.callThrough();
+    spyOn(ngInvocationHandelerService, 'funcError').and.callThrough();
+    spyOn(feedbackUIService, 'appendErrorMsg').and.callThrough();
+  });
 
   it('should not attach any message without an error', function (done) {
     httpBackend.expectGET('http://example.org/events/1').respond(200, [{id: 1, value: 'sample1'}, {
@@ -38,8 +39,6 @@ describe('angular-invocation-handler with default config:', function () {
     busService.list('1', function (events) {
       expect(events.length).toBe(2);
       expect(ngInvocationHandelerService.funcError).not.toHaveBeenCalled();
-      expect(myiHService.resolve).not.toHaveBeenCalled();
-      expect(feedbackUIService.appendErrorMsg).not.toHaveBeenCalled();
       done();
     });
     httpBackend.flush();
@@ -51,10 +50,8 @@ describe('angular-invocation-handler with default config:', function () {
       fail();
     });
     httpBackend.flush();
+    expect(ngInvocationHandelerService.funcError).toHaveBeenCalled();
     expect(location.path).not.toHaveBeenCalled();
-    expect(ngInvocationHandelerService.funcError).not.toHaveBeenCalled();
-    expect(myiHService.resolve).not.toHaveBeenCalled();
-    expect(feedbackUIService.appendErrorMsg).not.toHaveBeenCalled();
     done();
   });
 
@@ -65,16 +62,6 @@ describe('angular-invocation-handler with default config:', function () {
     });
     httpBackend.flush();
     expect(feedbackUIService.appendErrorMsg).not.toHaveBeenCalled();
-    done();
-  });
-
-  it('should not use custom error handler', function (done) {
-    httpBackend.expectGET('http://example.org/events/1').respond(500, {}, {}, 'should not use custom error handler');
-    busService.list('1', function (events) {
-      fail();
-    });
-    httpBackend.flush();
-    expect(myiHService.resolve).not.toHaveBeenCalled();
     done();
   });
 

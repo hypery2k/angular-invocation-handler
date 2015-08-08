@@ -51,7 +51,7 @@ core.provider('ngIHService', function () {
       });
     },
 
-    $get: function ($log, $injector, $location, feedbackUI, ngIHConfig) {
+    $get: function ($log, $injector, $window, $location, feedbackUI, ngIHConfig) {
 
       var handler = {
 
@@ -65,44 +65,43 @@ core.provider('ngIHService', function () {
           // of error messages to create the "perfect" error message for our users, you should probably do the same. :)
           if (err) {
             var errorDetails = {
-              error: err,
+              error: {},
               timestamp: new Date(),
               browserInfo: {
                 navigatorAppName: navigator.appName,
                 navigatorUserAgent: navigator.userAgent,
                 navigatorPlatform: navigator.platform
+              },
+              location: angular.toJson($window.location),
+              // cause       : cause || null,
+              performance: ($window.performance) ? angular.toJson($window.performance) : null
+            }
+
+            if (err && !angular.isUndefined(err.status)) {
+              if (!ngIHConfig.customErrorHandler) {
+                // A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
+                errorDetails.error = ngIHConfig.httpErrors[err.status];
               }
+            } else if (err && err.message) {
+              // Exceptions are unwrapped.
+              var exception = err.message;
+              errorDetails.error.exception = exception.toString();
+              errorDetails.error.stack = exception.stack.toString();
+            }
+            if (!angular.isString(err)) {
+              errorDetails.error = 'An unkown error occurred.';
             }
 
-
-            if (ngIHConfig.redirect) {
-              $log.info('Redirect to /' + err.status + '.html')
-              $location.path('/' + err.status + '.html');
+            // Use the context provided by the service.
+            if (func && func.description) {
+              errorDetails.descripton = 'Call to ' + func.description + ' had caused errors.';
             }
-
+            $log.error('An error occurred: ' + err);
             if (ngIHConfig.customErrorHandler) {
               $injector.get(ngIHConfig.customErrorHandler).resolve(errorDetails, callback);
-
             } else {
-              if (err && !angular.isUndefined(err.status)) {
-                // A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
-                err = ngIHConfig.httpErrors[err.status];
-              } else if (err && err.message) {
-                // Exceptions are unwrapped.
-                err = err.message;
-              }
-              if (!angular.isString(err)) {
-                err = 'An unkown error occurred.';
-              }
-
-              // Use the context provided by the service.
-              if (func && func.description) {
-                err = 'Call to ' + func.description + ' had caused errors.';
-              }
-              $log.error('An error occurred: ' + err);
               callback(errorDetails);
             }
-
           }
         },
         // Report the error [err] in relation to the function [func].
@@ -112,6 +111,11 @@ core.provider('ngIHService', function () {
               feedbackUI.appendErrorMsg(msg);
             }
             handler.errors.push(msg);
+
+            if (ngIHConfig.redirect) {
+              $log.info('Redirect to /' + err.status + '.html')
+              $location.path('/' + err.status + '.html');
+            }
           });
 
         },

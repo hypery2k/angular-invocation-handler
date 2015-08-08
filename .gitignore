@@ -13,11 +13,11 @@
 **/target
 **/bin
 **/.springBeans
+taget/*
+dist/*
 
 # IDEA files
 .idea/*
 *.iml
 *.ipr
 *.iws
-
-docs/surefire-reports/*
