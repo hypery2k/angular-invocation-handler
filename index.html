@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Angular-invocation-handler by hypery2k</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Angular-invocation-handler</h1>
+      <h2 class="project-tagline">A module for collecting errors, stack traces and other information globally</h2>
+      <a href="https://github.com/hypery2k/angular-invocation-handler" class="btn">View on GitHub</a>
+      <a href="https://github.com/hypery2k/angular-invocation-handler/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/hypery2k/angular-invocation-handler/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="angular-invocation-handler" class="anchor" href="#angular-invocation-handler" aria-hidden="true"><span class="octicon octicon-link"></span></a>Angular Invocation Handler</h1>
+
+<blockquote>
+<p>A module for collecting errors, stack traces and other information globally from within your Angular app
+e.g. for saving to a remote service or for displaying</p>
+</blockquote>
+
+<p><a href="https://travis-ci.org/hypery2k/angular-invocation-handler"><img src="https://travis-ci.org/hypery2k/angular-invocation-handler.svg?branch=master" alt="Build Status"></a>
+<a href="https://ci.appveyor.com/project/hypery2k/angular-invocation-handler"><img src="https://ci.appveyor.com/api/projects/status/qbdypq5n7p4x3i78?svg=true" alt="Build status"></a>
+<a href="http://badge.fury.io/bo/angular-invocation-handler"><img src="https://badge.fury.io/bo/angular-invocation-handler.svg" alt="Bower version"></a>
+<a href="https://david-dm.org/hypery2k/angular-invocation-handler#info=devDependencies"><img src="https://david-dm.org/hypery2k/angular-invocation-handler/dev-status.svg" alt=" NPM devDependency Status"></a></p>
+
+<h2>
+<a id="reasons-to-use" class="anchor" href="#reasons-to-use" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reasons to use</h2>
+
+<p>It's anyoing to handle all errors in controller and service and also very defective.
+So instead of surfacing the log it would be cool to manage them at a central place and maybe store them via on a backend service</p>
+
+<h2>
+<a id="wip" class="anchor" href="#wip" aria-hidden="true"><span class="octicon octicon-link"></span></a>WIP</h2>
+
+<ul>
+<li>[x] Library core</li>
+<li>[x] Write unit tests</li>
+<li>[ ] Write e2e-tests</li>
+<li>[ ] Write an API doc</li>
+<li>[ ] Provide complete examples</li>
+</ul>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Install this module:</p>
+
+<div class="highlight highlight-bash"><pre>bower install angular-invocation-handler --save</pre></div>
+
+<p>Add the dependencies</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">/*global app: true*/</span>
+<span class="pl-k">var</span> app <span class="pl-k">=</span> angular.module(<span class="pl-s"><span class="pl-pds">'</span>resourcesApp<span class="pl-pds">'</span></span>, [
+...
+<span class="pl-s"><span class="pl-pds">'</span>ngIH.core<span class="pl-pds">'</span></span>,
+<span class="pl-s"><span class="pl-pds">'</span>ngIH.ui<span class="pl-pds">'</span></span> <span class="pl-c">// optional</span>
+]);</pre></div>
+
+<p>If you like to display the error message within your app, also include the ui module.</p>
+
+<p>Configure the service to be handled:</p>
+
+<div class="highlight highlight-javascript"><pre>app.config(<span class="pl-k">function</span> (<span class="pl-smi">$provide</span>, <span class="pl-smi">ngIHServiceProvider</span>, <span class="pl-smi">ngIHConfig</span>) {
+  <span class="pl-s"><span class="pl-pds">'</span>use strict<span class="pl-pds">'</span></span>;
+
+  <span class="pl-c">// enable UI feedback attach, default false</span>
+  ngIHConfig.feedbackAttach <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+  <span class="pl-c">// redirect to static error pages, e.g. 404 --&gt; /404.html, default false</span>
+  ngIHConfig.redirect <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+  <span class="pl-c">// adding custom error handler, default is disabled</span>
+  ngIHConfig.customErrorHandler <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>errorHandlingService<span class="pl-pds">'</span></span>;
+  <span class="pl-c">// decorate the mentioned [services] with automatic error handling.</span>
+  ngIHServiceProvider.decorate($provide, [<span class="pl-s"><span class="pl-pds">'</span>eventService<span class="pl-pds">'</span></span>]);
+});
+</pre></div>
+
+<p>The customized error handling service looks like this:</p>
+
+<div class="highlight highlight-javascript"><pre>app.factory(<span class="pl-s"><span class="pl-pds">'</span>errorHandlingService<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">$log</span>, <span class="pl-smi">$translate</span>, <span class="pl-smi">blockUI</span>) {
+    <span class="pl-s"><span class="pl-pds">'</span>use strict<span class="pl-pds">'</span></span>;
+
+    <span class="pl-k">function</span> <span class="pl-en">buildValidationMessages</span>(<span class="pl-smi">error</span>, <span class="pl-smi">msg</span>, <span class="pl-smi">callback</span>, <span class="pl-smi">i</span>) {
+        <span class="pl-k">var</span> errorDetails <span class="pl-k">=</span> error.<span class="pl-c1">data</span>[i];
+        $translate(<span class="pl-s"><span class="pl-pds">'</span>VALIDATION_ERROR_<span class="pl-pds">'</span></span> <span class="pl-k">+</span> errorDetails.messageTemplate).then(<span class="pl-k">function</span> (<span class="pl-smi">translatedValue</span>) {
+            msg <span class="pl-k">=</span> msg <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span> <span class="pl-k">+</span> translatedValue;
+
+            <span class="pl-c">// replace placeholder if set</span>
+            <span class="pl-k">if</span> (errorDetails.propertyList) {
+                msg <span class="pl-k">=</span> msg.format(errorDetails.propertyList);
+            }
+
+            <span class="pl-c">// callback when complete</span>
+            <span class="pl-k">if</span> (i <span class="pl-k">===</span> error.<span class="pl-c1">data</span>.<span class="pl-c1">length</span> <span class="pl-k">-</span> <span class="pl-c1">1</span>) {
+                $log.debug(error.<span class="pl-c1">status</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span>=&gt;<span class="pl-pds">'</span></span> <span class="pl-k">+</span> msg);
+                callback(msg);
+            }
+        }, <span class="pl-k">function</span> (<span class="pl-smi">err</span>) {
+            $log<span class="pl-c1">.error</span>(err);
+            callback(msg);
+        });
+    }
+
+    <span class="pl-k">return</span> {
+        <span class="pl-en">resolve</span><span class="pl-k">:</span> <span class="pl-k">function</span> (<span class="pl-smi">details</span>, <span class="pl-smi">callback</span>) {
+            <span class="pl-k">if</span> (details<span class="pl-c1">.error</span>) {
+                <span class="pl-k">var</span> error <span class="pl-k">=</span> details<span class="pl-c1">.error</span>;
+                <span class="pl-c">// read by http code</span>
+                $translate(<span class="pl-s"><span class="pl-pds">'</span>HTTP_STATUS_CODE_<span class="pl-pds">'</span></span> <span class="pl-k">+</span> error.<span class="pl-c1">status</span>).then(<span class="pl-k">function</span> (<span class="pl-smi">translatedValue</span>) {
+                    <span class="pl-k">var</span> msg <span class="pl-k">=</span> translatedValue;
+                    <span class="pl-c">// handle violation errors</span>
+                    <span class="pl-k">if</span> (error.<span class="pl-c1">status</span> <span class="pl-k">===</span> <span class="pl-c1">400</span> <span class="pl-k">&amp;&amp;</span> error.<span class="pl-c1">data</span> <span class="pl-k">&amp;&amp;</span> error.<span class="pl-c1">data</span>.<span class="pl-c1">length</span>) {
+                        <span class="pl-k">for</span> (<span class="pl-k">var</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> error.<span class="pl-c1">data</span>.<span class="pl-c1">length</span>; i<span class="pl-k">++</span>) {
+                            blockUI.<span class="pl-c1">stop</span>();
+                            buildValidationMessages(error, msg, callback, i);
+                        }
+                    } <span class="pl-k">else</span> {
+                        blockUI.<span class="pl-c1">stop</span>();
+                        $log.debug(error.<span class="pl-c1">status</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span>=&gt;<span class="pl-pds">'</span></span> <span class="pl-k">+</span> msg);
+                        callback(msg);
+                    }
+                });
+            }
+        }
+    };
+});</pre></div>
+
+<h3>
+<a id="about" class="anchor" href="#about" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h3>
+
+<p>This module instruments Angular's <code>interceptors</code> to invoke a configurable set for the error handling.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/hypery2k/angular-invocation-handler">Angular-invocation-handler</a> is maintained by <a href="https://github.com/hypery2k">hypery2k</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
