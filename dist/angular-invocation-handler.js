@@ -1,4 +1,4 @@
-/* angular-invocation-handler - Version 0.1.2, 08-08-2015
+/* angular-invocation-handler - Version 0.2.0-dev, 08-08-2015
  * 
  * Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user
  * 
