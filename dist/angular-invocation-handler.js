@@ -1,4 +1,4 @@
-/* angular-invocation-handler - Version 1.1.2, 08-08-2015
+/* angular-invocation-handler - Version 1.2.0, 08-08-2015
  * 
  * Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user
  * 
@@ -72,7 +72,10 @@ core.provider('ngIHService', function () {
           // of error messages to create the "perfect" error message for our users, you should probably do the same. :)
           if (err) {
             var errorDetails = {
-              error: {},
+              error: {
+                message: 'An unknown error occurred.',
+                data: err.data
+              },
               timestamp: new Date(),
               browserInfo: {
                 navigatorAppName: navigator.appName,
@@ -85,9 +88,10 @@ core.provider('ngIHService', function () {
             }
 
             if (err && !angular.isUndefined(err.status)) {
+              errorDetails.status = err.status;
               if (!ngIHConfig.customErrorHandler) {
                 // A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
-                errorDetails.error = ngIHConfig.httpErrors[err.status];
+                errorDetails.error.message = ngIHConfig.httpErrors[err.status0];
               }
             } else if (err && err.message) {
               // Exceptions are unwrapped.
@@ -95,15 +99,12 @@ core.provider('ngIHService', function () {
               errorDetails.error.exception = exception.toString();
               errorDetails.error.stack = exception.stack.toString();
             }
-            if (!angular.isString(err)) {
-              errorDetails.error = 'An unkown error occurred.';
-            }
 
             // Use the context provided by the service.
             if (func && func.description) {
               errorDetails.descripton = 'Call to ' + func.description + ' had caused errors.';
             }
-            $log.error('An error occurred: ' + err);
+            $log.error('An error occurred: ' + errorDetails);
             if (ngIHConfig.customErrorHandler) {
               $injector.get(ngIHConfig.customErrorHandler).resolve(errorDetails, callback);
             } else {
