@@ -1,4 +1,4 @@
-/* angular-invocation-handler - Version 1.2.0, 08-08-2015
+/* angular-invocation-handler - Version 1.2.1, 15-08-2015
  * 
  * Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user
  * 
@@ -97,7 +97,9 @@ core.provider('ngIHService', function () {
               // Exceptions are unwrapped.
               var exception = err.message;
               errorDetails.error.exception = exception.toString();
-              errorDetails.error.stack = exception.stack.toString();
+              if (exception.stack) {
+                errorDetails.error.stack = exception.stack.toString();
+              }
             }
 
             // Use the context provided by the service.
