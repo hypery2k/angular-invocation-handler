@@ -90,7 +90,9 @@ core.provider('ngIHService', function () {
               // Exceptions are unwrapped.
               var exception = err.message;
               errorDetails.error.exception = exception.toString();
-              errorDetails.error.stack = exception.stack.toString();
+              if (exception.stack) {
+                errorDetails.error.stack = exception.stack.toString();
+              }
             }
 
             // Use the context provided by the service.
