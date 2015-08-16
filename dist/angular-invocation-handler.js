@@ -1,4 +1,4 @@
-/* angular-invocation-handler - Version 1.2.1, 15-08-2015
+/* angular-invocation-handler - Version 1.2.2, 16-08-2015
  * 
  * Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user
  * 
@@ -249,7 +249,14 @@ ui.run(["$rootScope", "$document", "ngIHConfig", "$templateCache", function ($ro
   });
 
   // trigger directive
-  $document.find('.header').attr('ui-error-handler', '');
+  var html = '<div ui-error-handler></div>';
+  // search for bootstrap classes
+  if ($document.find('.navbar').length) {
+    angular.element($document.find('.navbar')).parent(1).append(html);
+  } else {
+    // fallback to body
+    angular.element($document.find('body')).prepend(html);
+  }
 
   if (ngIHConfig.template) {
     // Swap the builtin template with the custom template.

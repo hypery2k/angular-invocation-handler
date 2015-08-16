@@ -242,7 +242,14 @@ ui.run(function ($rootScope, $document, ngIHConfig, $templateCache) {
   });
 
   // trigger directive
-  $document.find('.header').attr('ui-error-handler', '');
+  var html = '<div ui-error-handler></div>';
+  // search for bootstrap classes
+  if ($document.find('.navbar').length) {
+    angular.element($document.find('.navbar')).parent(1).append(html);
+  } else {
+    // fallback to body
+    angular.element($document.find('body')).prepend(html);
+  }
 
   if (ngIHConfig.template) {
     // Swap the builtin template with the custom template.
