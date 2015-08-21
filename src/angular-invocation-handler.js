@@ -245,7 +245,7 @@ ui.run(function ($rootScope, $document, ngIHConfig, $templateCache) {
   var html = '<div ui-error-handler></div>';
   // search for bootstrap classes
   if ($document.find('.navbar').length) {
-    angular.element($document.find('.navbar')).parent(1).append(html);
+    angular.element($document.find('.navbar')).append(html);
   } else {
     // fallback to body
     angular.element($document.find('body')).prepend(html);
