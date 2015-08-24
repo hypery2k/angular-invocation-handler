@@ -30,6 +30,11 @@ core.provider('ngIHService', function () {
     }, func);
   }
 
+  // TODO move to module
+  function isFunction(obj) {
+    return !!(obj && obj.constructor && obj.call && obj.apply);
+  };
+
   // Decorate all functions of the service [$delegate] with error handling. This function should be used as decorator
   // function in a call to $provide.decorator().
   var decorator = ['$delegate', '$injector', function ($delegate, $injector) {
@@ -108,21 +113,22 @@ core.provider('ngIHService', function () {
           }
         },
         // Report the error [err] in relation to the function [func].
-        funcError: function (func, err) {
-          handler.resolveErrorCode(func, err, function (msg) {
-            if (ngIHConfig.feedbackAttach) {
-              feedbackUI.appendErrorMsg(msg);
-            }
-            handler.errors.push(msg);
+        funcError: function (func, err, args) {
+          // check if error callback exists
+          if (isFunction(args[args.length - 1]) && !isFunction(args[args.length - 2])) {
+            handler.resolveErrorCode(func, err, function (msg) {
+              if (ngIHConfig.feedbackAttach) {
+                feedbackUI.appendErrorMsg(msg);
+              }
+              handler.errors.push(msg);
 
-            if (ngIHConfig.redirect) {
-              $log.info('Redirect to /' + err.status + '.html')
-              $location.path('/' + err.status + '.html');
-            }
-          });
-
+              if (ngIHConfig.redirect) {
+                $log.info('Redirect to /' + err.status + '.html')
+                $location.path('/' + err.status + '.html');
+              }
+            });
+          }
         },
-
 
         // Call the provided function [func] with the provided [args] and error handling enabled.
         call: function (func, self, args) {
@@ -133,7 +139,7 @@ core.provider('ngIHService', function () {
             result = func.apply(self, args);
           } catch (err) {
             // Catch synchronous errors.
-            handler.funcError(func, err);
+            handler.funcError(func, err, args);
             throw err;
           }
 
@@ -141,7 +147,7 @@ core.provider('ngIHService', function () {
           var promise = result && result.$promise || result;
           if (promise && angular.isFunction(promise.then) && angular.isFunction(promise['catch'])) {
             // promise is a genuine promise, so we call [handler.async].
-            handler.async(func, promise);
+            handler.async(func, promise, args);
           }
 
           return result;
@@ -149,9 +155,9 @@ core.provider('ngIHService', function () {
 
 
         // Automatically record rejections of the provided [promise].
-        async: function (func, promise) {
+        async: function (func, promise, args) {
           promise['catch'](function (err) {
-            handler.funcError(func, err);
+            handler.funcError(func, err, args);
           });
           return promise;
         }
@@ -224,6 +230,7 @@ ui.directive('uiErrorHandler', function ($rootScope, ngIHConfig) {
 
   return {
     restrict: 'A',
+    replace: ngIHConfig.scrollToError,
     compile: function ($element) {
       // Class should be added here to prevent an animation delay error.
       $element.append(ngIHConfig.template);
@@ -241,20 +248,23 @@ ui.run(function ($rootScope, $document, ngIHConfig, $templateCache) {
     $rootScope[ngIHConfig.model.alerts] = [];
   });
 
-  // trigger directive
-  var html = '<div ui-error-handler></div>';
-  // search for bootstrap classes
-  if ($document.find('.navbar').length) {
-    angular.element($document.find('.navbar')).append(html);
-  } else {
-    // fallback to body
-    angular.element($document.find('body')).prepend(html);
-  }
+  if (ngIHConfig.feedbackAttach) {
+    // trigger directive
+    var html = '<div ui-error-handler></div>';
+    var selector = ngIHConfig.uiSelector || '.navbar';
+    // search for bootstrap classes
+    if ($document.find(selector).length) {
+      angular.element($document.find(selector)).append(html);
+    } else {
+      // fallback to body
+      angular.element($document.find('body')).prepend(html);
+    }
 
-  if (ngIHConfig.template) {
-    // Swap the builtin template with the custom template.
-    // Create a magic cache key and place the template in the cache.
-    ngIHConfig.templateUrl = '$$angular-errorhandler-template$$';
-    $templateCache.put(ngIHConfig.templateUrl, ngIHConfig.template);
+    if (ngIHConfig.template) {
+      // Swap the builtin template with the custom template.
+      // Create a magic cache key and place the template in the cache.
+      ngIHConfig.templateUrl = '$$angular-errorhandler-template$$';
+      $templateCache.put(ngIHConfig.templateUrl, ngIHConfig.template);
+    }
   }
 });
