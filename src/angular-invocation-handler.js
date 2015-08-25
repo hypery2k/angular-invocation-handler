@@ -104,7 +104,7 @@ core.provider('ngIHService', function () {
             if (func && func.description) {
               errorDetails.descripton = 'Call to ' + func.description + ' had caused errors.';
             }
-            $log.error('An error occurred: ' + errorDetails);
+            $log.error('An error occurred: ' + JSON.stringify(errorDetails));
             if (ngIHConfig.customErrorHandler) {
               $injector.get(ngIHConfig.customErrorHandler).resolve(errorDetails, callback);
             } else {
@@ -228,12 +228,22 @@ ui.factory('feedbackUI', function (ngIHConfig, $timeout, $rootScope) {
 ui.directive('uiErrorHandler', function ($rootScope, ngIHConfig) {
   'use strict';
 
+  var linkFunction = function (scope, elm, attrs) {
+    if (ngIHConfig.scrollToError) {
+      scope.$watchCollection('val', function (value) {
+        $("body").animate({scrollTop: elm.offset().top}, "slow");
+      });
+    }
+  };
+
   return {
-    restrict: 'A',
-    replace: ngIHConfig.scrollToError,
+    restrict: 'E',
+    scope: {
+      val: '='
+    },
     compile: function ($element) {
-      // Class should be added here to prevent an animation delay error.
       $element.append(ngIHConfig.template);
+      return linkFunction;
     }
   };
 });
@@ -250,7 +260,7 @@ ui.run(function ($rootScope, $document, ngIHConfig, $templateCache) {
 
   if (ngIHConfig.feedbackAttach) {
     // trigger directive
-    var html = '<div ui-error-handler></div>';
+    var html = '<ui-error-handler val="alerts"></ui-error-handler>';
     var selector = ngIHConfig.uiSelector || '.navbar';
     // search for bootstrap classes
     if ($document.find(selector).length) {
