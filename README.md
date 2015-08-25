@@ -48,6 +48,10 @@ app.config(function ($provide, ngIHServiceProvider, ngIHConfig) {
 
   // enable UI feedback attach, default false
   ngIHConfig.feedbackAttach = true;
+  // set custom selector for appending UI error display element
+  ngIHConfig.uiSelector = '.navbar';
+  // enable scrolling to error display element
+  ngIHConfig.scrollToError = true;  
   // redirect to static error pages, e.g. 404 --> /404.html, default false
   ngIHConfig.redirect = true;
   // adding custom error handler, default is disabled
