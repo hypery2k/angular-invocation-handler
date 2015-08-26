@@ -169,7 +169,7 @@ core.provider('ngIHService', function () {
   };
 });
 
-core.factory('httpErrorInterceptor', function () {
+core.factory('httpErrorInterceptor', function (ngIHConfig) {
   'use strict';
 
   return {
