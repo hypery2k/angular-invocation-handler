@@ -13,6 +13,7 @@ core.constant('ngIHConfig', {
     405: 'Zugriffsfehler.',
     500: 'Unbekannte Serverfehler.'
   },
+  httpTimeout: 3000,
   redirect: false,
   customErrorHandler: false,
   template: '<alert ng-repeat=\"alert in alerts\" type=\"{{alert.type}}\" close=\"alerts.splice($index, 1)\">{{::alert.msg}}</alert>',
@@ -173,9 +174,7 @@ core.factory('httpErrorInterceptor', function () {
 
   return {
     request: function (config) {
-      // 3 seconds timeout
-      // TODO move to config
-      config.timeout = 3000;
+      config.timeout = ngIHConfig.httpTimeout;
       return config;
     }
   };
