@@ -1,4 +1,4 @@
-/* angular-invocation-handler - Version 1.3.0, 25-08-2015
+/* angular-invocation-handler - Version 1.3.1, 26-08-2015
  * 
  * Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user
  * 
@@ -20,6 +20,7 @@ core.constant('ngIHConfig', {
     405: 'Zugriffsfehler.',
     500: 'Unbekannte Serverfehler.'
   },
+  httpTimeout: 3000,
   redirect: false,
   customErrorHandler: false,
   template: '<alert ng-repeat=\"alert in alerts\" type=\"{{alert.type}}\" close=\"alerts.splice($index, 1)\">{{::alert.msg}}</alert>',
@@ -175,18 +176,16 @@ core.provider('ngIHService', function () {
   };
 });
 
-core.factory('httpErrorInterceptor', function () {
+core.factory('httpErrorInterceptor', ["ngIHConfig", function (ngIHConfig) {
   'use strict';
 
   return {
     request: function (config) {
-      // 3 seconds timeout
-      // TODO move to config
-      config.timeout = 3000;
+      config.timeout = ngIHConfig.httpTimeout;
       return config;
     }
   };
-});
+}]);
 
 core.config(["$provide", "$httpProvider", function ($provide, $httpProvider) {
   'use strict';
