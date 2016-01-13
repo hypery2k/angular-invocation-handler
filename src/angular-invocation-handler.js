@@ -84,7 +84,7 @@ core.provider('ngIHService', function () {
               location: angular.toJson($window.location),
               // cause       : cause || null,
               performance: ($window.performance) ? angular.toJson($window.performance) : null
-            }
+            };
 
             if (err && !angular.isUndefined(err.status)) {
               errorDetails.status = err.status;
@@ -203,7 +203,8 @@ ui.factory('feedbackUI', function (ngIHConfig, $timeout, $rootScope) {
 
     return {
       appendErrorMsg: function (msg) {
-        if (!$rootScope[ngIHConfig.model.alerts]) {
+
+        if (!$rootScope[ngIHConfig.model.alerts] || ngIHConfig.feedbackClear) {
           $rootScope[ngIHConfig.model.alerts] = [];
         }
         $rootScope[ngIHConfig.model.alerts].push({
@@ -212,7 +213,7 @@ ui.factory('feedbackUI', function (ngIHConfig, $timeout, $rootScope) {
         });
       },
       appendInfoMsg: function (msg) {
-        if (!$rootScope[ngIHConfig.model.alerts]) {
+        if (!$rootScope[ngIHConfig.model.alerts] || ngIHConfig.feedbackClear) {
           $rootScope[ngIHConfig.model.alerts] = [];
         }
         $rootScope[ngIHConfig.model.alerts].push({

@@ -48,6 +48,8 @@ app.config(function ($provide, ngIHServiceProvider, ngIHConfig) {
 
   // enable UI feedback attach, default false
   ngIHConfig.feedbackAttach = true;
+  // enable clearing of feedback 
+  ngIHConfig.feedbackClear = true;
   // set custom selector for appending UI error display element
   ngIHConfig.uiSelector = '.navbar';
   // enable scrolling to error display element
