@@ -253,7 +253,7 @@ ui.run(function ($rootScope, $document, ngIHConfig, $templateCache) {
 
 
   // register listener to watch route changes
-  $rootScope.$on('$routeChangeStart', function () {
+  $rootScope.$on('$locationChangeSuccess', function () {
     // reset alerts
     $rootScope[ngIHConfig.model.alerts] = [];
   });
