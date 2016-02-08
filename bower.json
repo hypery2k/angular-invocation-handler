@@ -18,6 +18,7 @@
     "error"
   ],
   "dependencies": {
+    "es5-shim": "4.1.7",
     "angular": "^1.2.12"
   },
   "devDependencies": {
