@@ -1,8 +1,8 @@
-/* angular-invocation-handler - Version 1.3.1, 26-08-2015
+/* angular-invocation-handler - Version 1.3.2, 08-02-2016
  * 
  * Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user
  * 
- * Copyright 2015  - Martin Reinhardt <contact@martinreinhardt-online.de>
+ * Copyright 2016  - Martin Reinhardt <contact@martinreinhardt-online.de>
  * License MIT
  */
 var core = angular.module('ngIH.core', []);
@@ -91,7 +91,7 @@ core.provider('ngIHService', function () {
               location: angular.toJson($window.location),
               // cause       : cause || null,
               performance: ($window.performance) ? angular.toJson($window.performance) : null
-            }
+            };
 
             if (err && !angular.isUndefined(err.status)) {
               errorDetails.status = err.status;
@@ -210,7 +210,8 @@ ui.factory('feedbackUI', ["ngIHConfig", "$timeout", "$rootScope", function (ngIH
 
     return {
       appendErrorMsg: function (msg) {
-        if (!$rootScope[ngIHConfig.model.alerts]) {
+
+        if (!$rootScope[ngIHConfig.model.alerts] || ngIHConfig.feedbackClear) {
           $rootScope[ngIHConfig.model.alerts] = [];
         }
         $rootScope[ngIHConfig.model.alerts].push({
@@ -219,7 +220,7 @@ ui.factory('feedbackUI', ["ngIHConfig", "$timeout", "$rootScope", function (ngIH
         });
       },
       appendInfoMsg: function (msg) {
-        if (!$rootScope[ngIHConfig.model.alerts]) {
+        if (!$rootScope[ngIHConfig.model.alerts] || ngIHConfig.feedbackClear) {
           $rootScope[ngIHConfig.model.alerts] = [];
         }
         $rootScope[ngIHConfig.model.alerts].push({
@@ -259,7 +260,7 @@ ui.run(["$rootScope", "$document", "ngIHConfig", "$templateCache", function ($ro
 
 
   // register listener to watch route changes
-  $rootScope.$on('$routeChangeStart', function () {
+  $rootScope.$on('$locationChangeSuccess', function () {
     // reset alerts
     $rootScope[ngIHConfig.model.alerts] = [];
   });
