@@ -248,14 +248,16 @@ ui.directive('uiErrorHandler', function ($rootScope, ngIHConfig) {
   };
 });
 
-ui.run(function ($rootScope, $document, ngIHConfig, $templateCache) {
+ui.run(function ($rootScope, $document, ngIHConfig, $templateCache, $timeout) {
   'use strict';
 
 
   // register listener to watch route changes
   $rootScope.$on('$locationChangeSuccess', function () {
-    // reset alerts
-    $rootScope[ngIHConfig.model.alerts] = [];
+    // reset alerts with a delay to remove after rendering
+    $timeout(function(){
+      $rootScope[ngIHConfig.model.alerts] = [];
+    });
   });
 
   if (ngIHConfig.feedbackAttach) {
