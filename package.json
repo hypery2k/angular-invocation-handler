@@ -1,6 +1,6 @@
 {
   "name": "angular-invocation-handler",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user",
   "homepage": "https://github.com/hypery2k/angular-invocation-handler",
   "keywords": [
