@@ -1,5 +1,8 @@
-var core = angular.module('ngIH.core', []);
-var ui = angular.module('ngIH.ui', []);
+(function (angular) {
+  'use strict';
+
+  var core = angular.module('ngIH.core', []);
+  var ui = angular.module('ngIH.ui', []);
 
 // Core
 
@@ -248,7 +251,7 @@ ui.directive('uiErrorHandler', function ($rootScope, ngIHConfig) {
   };
 });
 
-ui.run(function ($rootScope, $document, ngIHConfig, $templateCache, $timeout) {
+ui.run(function ($rootScope, $document, ngIHConfig, $templateCache) {
   'use strict';
 
 
@@ -280,3 +283,5 @@ ui.run(function ($rootScope, $document, ngIHConfig, $templateCache, $timeout) {
     }
   }
 });
+
+})(angular);

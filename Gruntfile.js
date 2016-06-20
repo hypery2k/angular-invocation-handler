@@ -197,11 +197,11 @@ module.exports = function (grunt) {
     },
     concat: {
       options: {
-        separator: ';',
+        separator: ';'
       },
       dist: {
         src: ['<%= yeoman.src %>/angular-invocation-handler.js'],
-        dest: '<%= yeoman.tmp %>/concat/scripts/angular-invocation-handler.js',
+        dest: '<%= yeoman.tmp %>/concat/scripts/angular-invocation-handler.js'
       }
     },
     // ng-annotate tries to make the code safe for minification automatically

@@ -1,8 +1,23 @@
 {
   "name": "angular-invocation-handler",
-  "version": "1.4.0-dev",
+  "version": "1.4.0",
   "description": "Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user",
   "homepage": "https://github.com/hypery2k/angular-invocation-handler",
+  "keywords": [
+    "angular",
+    "angularjs",
+    "errorhandling",
+    "front-end",
+    "library",
+    "web"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hypery2k/angular-invocation-handler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hypery2k/angular-invocation-handler/issues"
+  },
   "authors": [
     "Martin Reinhardt <contact@martinreinhardt-online.de>"
   ],
@@ -40,6 +55,7 @@
     "load-grunt-tasks": "^3.2.0",
     "time-grunt": "^1.2.1"
   },
+  "main": "index.js",
   "engines": {
     "node": ">=0.10.0"
   },
