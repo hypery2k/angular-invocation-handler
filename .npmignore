@@ -1,0 +1,24 @@
+/tmp/
+/.tmp/
+/.sass-cache/
+/bower_components/
+/node/
+/node_modules/
+
+# Eclipse files
+**/.project
+**/.settings/
+**/.classpath
+*.class
+**/target
+**/bin
+**/.springBeans
+taget/*
+dist/test-report/*
+dist/*.min.js
+
+# IDEA files
+.idea/*
+*.iml
+*.ipr
+*.iws
