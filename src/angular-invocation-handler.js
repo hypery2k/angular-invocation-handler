@@ -37,7 +37,7 @@
     // TODO move to module
     function isFunction(obj) {
       return !!(obj && obj.constructor && obj.call && obj.apply);
-    };
+    }
 
     // Decorate all functions of the service [$delegate] with error handling. This function should be used as decorator
     // function in a call to $provide.decorator().
@@ -112,14 +112,15 @@
               if (ngIHConfig.customErrorHandler) {
                 $injector.get(ngIHConfig.customErrorHandler).resolve(errorDetails, callback);
               } else {
-                callback(errorDetails);
+                return callback(errorDetails);
               }
             }
           },
           // Report the error [err] in relation to the function [func].
           funcError: function (func, err, args) {
+            var noCallbackDefined = isFunction(args[args.length - 1]) && !isFunction(args[args.length - 2]);
             // check if error callback exists
-            if (isFunction(args[args.length - 1]) && !isFunction(args[args.length - 2])) {
+            if (!args || args && noCallbackDefined) {
               handler.resolveErrorCode(func, err, function (msg) {
                 if (ngIHConfig.feedbackAttach) {
                   feedbackUI.appendErrorMsg(msg);
@@ -284,4 +285,4 @@
     }
   });
 
-})(angular);
+}(angular));
