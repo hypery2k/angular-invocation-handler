@@ -1,10 +1,10 @@
-# Angular Invocation Handler 
+# Angular Invocation Handler
 
 > A module for collecting errors, stack traces and other information globally from within your Angular app
 > e.g. for saving to a remote service or for displaying
 
 [![Build Status](https://travis-ci.org/hypery2k/angular-invocation-handler.svg?branch=master)](https://travis-ci.org/hypery2k/angular-invocation-handler)
-[![Build status](https://ci.appveyor.com/api/projects/status/qbdypq5n7p4x3i78?svg=true)](https://ci.appveyor.com/project/hypery2k/angular-invocation-handler) [![Bower version](https://badge.fury.io/bo/angular-invocation-handler.svg)](http://badge.fury.io/bo/angular-invocation-handler) [![npm version](https://badge.fury.io/js/angular-invocation-handler.svg)](http://badge.fury.io/js/angular-invocation-handler) 
+[![Build status](https://ci.appveyor.com/api/projects/status/qbdypq5n7p4x3i78?svg=true)](https://ci.appveyor.com/project/hypery2k/angular-invocation-handler) [![Bower version](https://badge.fury.io/bo/angular-invocation-handler.svg)](http://badge.fury.io/bo/angular-invocation-handler) [![npm version](https://badge.fury.io/js/angular-invocation-handler.svg)](http://badge.fury.io/js/angular-invocation-handler)
  [![Code Climate](https://codeclimate.com/github/hypery2k/angular-invocation-handler/badges/gpa.svg)](https://codeclimate.com/github/hypery2k/angular-invocation-handler) [![ NPM devDependency Status](https://david-dm.org/hypery2k/angular-invocation-handler/dev-status.svg)](https://david-dm.org/hypery2k/angular-invocation-handler#info=devDependencies)
 
 ## Reasons to use
@@ -33,7 +33,8 @@ Add the dependencies
 var app = angular.module('resourcesApp', [
 ...
 'ngIH.core',
-'ngIH.ui' // optional
+'ngIH.ui' /* optional */,
+'ngIH.exceptionHandler' /* optional */
 ]);
 ```
 
@@ -47,12 +48,12 @@ app.config(function ($provide, ngIHServiceProvider, ngIHConfig) {
 
   // enable UI feedback attach, default false
   ngIHConfig.feedbackAttach = true;
-  // enable clearing of feedback 
+  // enable clearing of feedback
   ngIHConfig.feedbackClear = true;
   // set custom selector for appending UI error display element
   ngIHConfig.uiSelector = '.navbar';
   // enable scrolling to error display element
-  ngIHConfig.scrollToError = true;  
+  ngIHConfig.scrollToError = true;
   // redirect to static error pages, e.g. 404 --> /404.html, default false
   ngIHConfig.redirect = true;
   // adding custom error handler, default is disabled

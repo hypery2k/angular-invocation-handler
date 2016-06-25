@@ -3,6 +3,7 @@
 
   var core = angular.module('ngIH.core', []);
   var ui = angular.module('ngIH.ui', []);
+  var exceptionHandler = angular.module('ngIH.exceptionHandler', []);
 
 // Core
 
@@ -22,6 +23,45 @@
     template: '<alert ng-repeat=\"alert in alerts\" type=\"{{alert.type}}\" close=\"alerts.splice($index, 1)\">{{::alert.msg}}</alert>',
     feedbackAttach: false
   });
+
+  function createErrorDetails(err, $window, ngIHConfig, func) {
+    var errorDetails = {
+      error: {
+        message: 'An unknown error occurred.',
+        data: err.data
+      },
+      timestamp: new Date(),
+      browserInfo: {
+        navigatorAppName: navigator.appName,
+        navigatorUserAgent: navigator.userAgent,
+        navigatorPlatform: navigator.platform
+      },
+      location: angular.toJson($window.location),
+      // cause       : cause || null,
+      performance: ($window.performance) ? angular.toJson($window.performance) : null
+    };
+
+    if (err && !angular.isUndefined(err.status)) {
+      errorDetails.status = err.status;
+      if (!ngIHConfig.customErrorHandler) {
+        // A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
+        errorDetails.error.message = ngIHConfig.httpErrors[err.status0];
+      }
+    } else if (err && err.message) {
+      // Exceptions are unwrapped.
+      var exception = err.message;
+      errorDetails.error.exception = exception.toString();
+      if (exception.stack) {
+        errorDetails.error.stack = exception.stack.toString();
+      }
+    }
+
+    // Use the context provided by the service.
+    if (func && func.description) {
+      errorDetails.descripton = 'Call to ' + func.description + ' had caused errors.';
+    }
+    return errorDetails;
+  }
 
   core.provider('ngIHService', function () {
     'use strict';
@@ -73,41 +113,7 @@
             // that were returned by the server, etc, etc, etc. Our original code contains a lot of checks and handling
             // of error messages to create the "perfect" error message for our users, you should probably do the same. :)
             if (err) {
-              var errorDetails = {
-                error: {
-                  message: 'An unknown error occurred.',
-                  data: err.data
-                },
-                timestamp: new Date(),
-                browserInfo: {
-                  navigatorAppName: navigator.appName,
-                  navigatorUserAgent: navigator.userAgent,
-                  navigatorPlatform: navigator.platform
-                },
-                location: angular.toJson($window.location),
-                // cause       : cause || null,
-                performance: ($window.performance) ? angular.toJson($window.performance) : null
-              };
-
-              if (err && !angular.isUndefined(err.status)) {
-                errorDetails.status = err.status;
-                if (!ngIHConfig.customErrorHandler) {
-                  // A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
-                  errorDetails.error.message = ngIHConfig.httpErrors[err.status0];
-                }
-              } else if (err && err.message) {
-                // Exceptions are unwrapped.
-                var exception = err.message;
-                errorDetails.error.exception = exception.toString();
-                if (exception.stack) {
-                  errorDetails.error.stack = exception.stack.toString();
-                }
-              }
-
-              // Use the context provided by the service.
-              if (func && func.description) {
-                errorDetails.descripton = 'Call to ' + func.description + ' had caused errors.';
-              }
+              var errorDetails = createErrorDetails(err, $window, ngIHConfig, func);
               $log.error('An error occurred: ' + JSON.stringify(errorDetails));
               if (ngIHConfig.customErrorHandler) {
                 $injector.get(ngIHConfig.customErrorHandler).resolve(errorDetails, callback);
@@ -128,7 +134,7 @@
                 handler.errors.push(msg);
 
                 if (ngIHConfig.redirect) {
-                  $log.info('Redirect to /' + err.status + '.html')
+                  $log.info('Redirect to /' + err.status + '.html');
                   $location.path('/' + err.status + '.html');
                 }
               });
@@ -282,6 +288,22 @@
         ngIHConfig.templateUrl = '$$angular-errorhandler-template$$';
         $templateCache.put(ngIHConfig.templateUrl, ngIHConfig.template);
       }
+    }
+  });
+
+  exceptionHandler.provider({
+    $exceptionHandler: function ($injector, $window, ngIHConfig) {
+      var handler = function (exception, cause) {
+        var errorDetails = createErrorDetails({data: {exception: exception, cause: cause}}, $window, ngIHConfig);
+        if (ngIHConfig.customErrorHandler) {
+          $injector.get(ngIHConfig.customErrorHandler).resolve(errorDetails, function () {
+          });
+        }
+      };
+
+      this.$get = function () {
+        return handler;
+      };
     }
   });
 
