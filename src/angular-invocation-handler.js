@@ -24,7 +24,7 @@
     feedbackAttach: false
   });
 
-  function createErrorDetails(err, $window, ngIHConfig, func) {
+  function addEnvDetails(err, $window) {
     var errorDetails = {
       error: {
         message: 'An unknown error occurred.',
@@ -40,6 +40,11 @@
       // cause       : cause || null,
       performance: ($window.performance) ? angular.toJson($window.performance) : null
     };
+    return errorDetails;
+  }
+
+  function createErrorDetails(err, $window, ngIHConfig, func) {
+    var errorDetails = addEnvDetails(err, $window);
 
     if (err && !angular.isUndefined(err.status)) {
       errorDetails.status = err.status;
@@ -211,21 +216,22 @@
 
       // PUBLIC API
 
+      function clearMessages() {
+        if (!$rootScope[ngIHConfig.model.alerts] || ngIHConfig.feedbackClear) {
+          $rootScope[ngIHConfig.model.alerts] = [];
+        }
+      }
+
       return {
         appendErrorMsg: function (msg) {
-
-          if (!$rootScope[ngIHConfig.model.alerts] || ngIHConfig.feedbackClear) {
-            $rootScope[ngIHConfig.model.alerts] = [];
-          }
+          clearMessages();
           $rootScope[ngIHConfig.model.alerts].push({
             type: 'danger',
             msg: msg
           });
         },
         appendInfoMsg: function (msg) {
-          if (!$rootScope[ngIHConfig.model.alerts] || ngIHConfig.feedbackClear) {
-            $rootScope[ngIHConfig.model.alerts] = [];
-          }
+          clearMessages();
           $rootScope[ngIHConfig.model.alerts].push({
             type: 'info',
             msg: msg
