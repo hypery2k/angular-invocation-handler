@@ -44,7 +44,7 @@
     // TODO move to module
     function isFunction(obj) {
       return !!(obj && obj.constructor && obj.call && obj.apply);
-    }
+    };
 
     // Decorate all functions of the service [$delegate] with error handling. This function should be used as decorator
     // function in a call to $provide.decorator().
@@ -59,50 +59,6 @@
     }];
 
     // The actual service:
-    function addEnvironmentDetails(err, $window) {
-      var errorDetails = {
-        error: {
-          message: 'An unknown error occurred.',
-          data: err.data
-        },
-        timestamp: new Date(),
-        browserInfo: {
-          navigatorAppName: navigator.appName,
-          navigatorUserAgent: navigator.userAgent,
-          navigatorPlatform: navigator.platform
-        },
-        location: angular.toJson($window.location),
-        // cause       : cause || null,
-        performance: ($window.performance) ? angular.toJson($window.performance) : null
-      };
-      return errorDetails;
-    }
-
-    function createErrorDetails(err, $window, ngIHConfig, func) {
-      var errorDetails = addEnvironmentDetails(err, $window);
-
-      if (err && !angular.isUndefined(err.status)) {
-        errorDetails.status = err.status;
-        if (!ngIHConfig.customErrorHandler) {
-          // A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
-          errorDetails.error.message = ngIHConfig.httpErrors[err.status0];
-        }
-      } else if (err && err.message) {
-        // Exceptions are unwrapped.
-        var exception = err.message;
-        errorDetails.error.exception = exception.toString();
-        if (exception.stack) {
-          errorDetails.error.stack = exception.stack.toString();
-        }
-      }
-
-      // Use the context provided by the service.
-      if (func && func.description) {
-        errorDetails.descripton = 'Call to ' + func.description + ' had caused errors.';
-      }
-      return errorDetails;
-    }
-
     return {
       // Decorate the mentioned [services] with automatic error handling.
       decorate: function ($provide, services) {
@@ -124,12 +80,46 @@
             // that were returned by the server, etc, etc, etc. Our original code contains a lot of checks and handling
             // of error messages to create the "perfect" error message for our users, you should probably do the same. :)
             if (err) {
-              var errorDetails = createErrorDetails(err, $window, ngIHConfig, func);
+              var errorDetails = {
+                error: {
+                  message: 'An unknown error occurred.',
+                  data: err.data
+                },
+                timestamp: new Date(),
+                browserInfo: {
+                  navigatorAppName: navigator.appName,
+                  navigatorUserAgent: navigator.userAgent,
+                  navigatorPlatform: navigator.platform
+                },
+                location: angular.toJson($window.location),
+                // cause       : cause || null,
+                performance: ($window.performance) ? angular.toJson($window.performance) : null
+              };
+
+              if (err && !angular.isUndefined(err.status)) {
+                errorDetails.status = err.status;
+                if (!ngIHConfig.customErrorHandler) {
+                  // A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
+                  errorDetails.error.message = ngIHConfig.httpErrors[err.status0];
+                }
+              } else if (err && err.message) {
+                // Exceptions are unwrapped.
+                var exception = err.message;
+                errorDetails.error.exception = exception.toString();
+                if (exception.stack) {
+                  errorDetails.error.stack = exception.stack.toString();
+                }
+              }
+
+              // Use the context provided by the service.
+              if (func && func.description) {
+                errorDetails.descripton = 'Call to ' + func.description + ' had caused errors.';
+              }
               $log.error('An error occurred: ' + JSON.stringify(errorDetails));
               if (ngIHConfig.customErrorHandler) {
                 $injector.get(ngIHConfig.customErrorHandler).resolve(errorDetails, callback);
               } else {
-                return callback(errorDetails);
+                callback(errorDetails);
               }
             }
           },
@@ -137,7 +127,7 @@
           funcError: function (func, err, args) {
             var noCallbackDefined = isFunction(args[args.length - 1]) && !isFunction(args[args.length - 2]);
             // check if error callback exists
-            if (!args || args && noCallbackDefined) {
+            if (!args || args && args.length === 0 || args && noCallbackDefined) {
               handler.resolveErrorCode(func, err, function (msg) {
                 if (ngIHConfig.feedbackAttach) {
                   feedbackUI.appendErrorMsg(msg);
@@ -302,4 +292,4 @@
     }
   }]);
 
-}(angular));
+})(angular);
