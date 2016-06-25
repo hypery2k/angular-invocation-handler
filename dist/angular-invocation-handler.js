@@ -1,4 +1,4 @@
-/* angular-invocation-handler - Version 1.4.0-dev, 20-06-2016
+/* angular-invocation-handler - Version 1.4.4, 25-06-2016
  * 
  * Enables general error handling and logging which allows to log errors, e.g for automatically sending back to the backend or for showing to the user
  * 
@@ -44,7 +44,7 @@
     // TODO move to module
     function isFunction(obj) {
       return !!(obj && obj.constructor && obj.call && obj.apply);
-    };
+    }
 
     // Decorate all functions of the service [$delegate] with error handling. This function should be used as decorator
     // function in a call to $provide.decorator().
@@ -59,6 +59,50 @@
     }];
 
     // The actual service:
+    function addEnvironmentDetails(err, $window) {
+      var errorDetails = {
+        error: {
+          message: 'An unknown error occurred.',
+          data: err.data
+        },
+        timestamp: new Date(),
+        browserInfo: {
+          navigatorAppName: navigator.appName,
+          navigatorUserAgent: navigator.userAgent,
+          navigatorPlatform: navigator.platform
+        },
+        location: angular.toJson($window.location),
+        // cause       : cause || null,
+        performance: ($window.performance) ? angular.toJson($window.performance) : null
+      };
+      return errorDetails;
+    }
+
+    function createErrorDetails(err, $window, ngIHConfig, func) {
+      var errorDetails = addEnvironmentDetails(err, $window);
+
+      if (err && !angular.isUndefined(err.status)) {
+        errorDetails.status = err.status;
+        if (!ngIHConfig.customErrorHandler) {
+          // A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
+          errorDetails.error.message = ngIHConfig.httpErrors[err.status0];
+        }
+      } else if (err && err.message) {
+        // Exceptions are unwrapped.
+        var exception = err.message;
+        errorDetails.error.exception = exception.toString();
+        if (exception.stack) {
+          errorDetails.error.stack = exception.stack.toString();
+        }
+      }
+
+      // Use the context provided by the service.
+      if (func && func.description) {
+        errorDetails.descripton = 'Call to ' + func.description + ' had caused errors.';
+      }
+      return errorDetails;
+    }
+
     return {
       // Decorate the mentioned [services] with automatic error handling.
       decorate: function ($provide, services) {
@@ -80,53 +124,20 @@
             // that were returned by the server, etc, etc, etc. Our original code contains a lot of checks and handling
             // of error messages to create the "perfect" error message for our users, you should probably do the same. :)
             if (err) {
-              var errorDetails = {
-                error: {
-                  message: 'An unknown error occurred.',
-                  data: err.data
-                },
-                timestamp: new Date(),
-                browserInfo: {
-                  navigatorAppName: navigator.appName,
-                  navigatorUserAgent: navigator.userAgent,
-                  navigatorPlatform: navigator.platform
-                },
-                location: angular.toJson($window.location),
-                // cause       : cause || null,
-                performance: ($window.performance) ? angular.toJson($window.performance) : null
-              };
-
-              if (err && !angular.isUndefined(err.status)) {
-                errorDetails.status = err.status;
-                if (!ngIHConfig.customErrorHandler) {
-                  // A lot of errors occur in relation to HTTP calls... translate these into user-friendly msgs.
-                  errorDetails.error.message = ngIHConfig.httpErrors[err.status0];
-                }
-              } else if (err && err.message) {
-                // Exceptions are unwrapped.
-                var exception = err.message;
-                errorDetails.error.exception = exception.toString();
-                if (exception.stack) {
-                  errorDetails.error.stack = exception.stack.toString();
-                }
-              }
-
-              // Use the context provided by the service.
-              if (func && func.description) {
-                errorDetails.descripton = 'Call to ' + func.description + ' had caused errors.';
-              }
+              var errorDetails = createErrorDetails(err, $window, ngIHConfig, func);
               $log.error('An error occurred: ' + JSON.stringify(errorDetails));
               if (ngIHConfig.customErrorHandler) {
                 $injector.get(ngIHConfig.customErrorHandler).resolve(errorDetails, callback);
               } else {
-                callback(errorDetails);
+                return callback(errorDetails);
               }
             }
           },
           // Report the error [err] in relation to the function [func].
           funcError: function (func, err, args) {
+            var noCallbackDefined = isFunction(args[args.length - 1]) && !isFunction(args[args.length - 2]);
             // check if error callback exists
-            if (isFunction(args[args.length - 1]) && !isFunction(args[args.length - 2])) {
+            if (!args || args && noCallbackDefined) {
               handler.resolveErrorCode(func, err, function (msg) {
                 if (ngIHConfig.feedbackAttach) {
                   feedbackUI.appendErrorMsg(msg);
@@ -258,14 +269,16 @@
     };
   }]);
 
-  ui.run(["$rootScope", "$document", "ngIHConfig", "$templateCache", function ($rootScope, $document, ngIHConfig, $templateCache) {
+  ui.run(["$rootScope", "$document", "$timeout", "ngIHConfig", "$templateCache", function ($rootScope, $document, $timeout, ngIHConfig, $templateCache) {
     'use strict';
 
 
     // register listener to watch route changes
     $rootScope.$on('$locationChangeSuccess', function () {
-      // reset alerts
-      $rootScope[ngIHConfig.model.alerts] = [];
+      // reset alerts with a delay to remove after rendering
+      $timeout(function () {
+        $rootScope[ngIHConfig.model.alerts] = [];
+      });
     });
 
     if (ngIHConfig.feedbackAttach) {
@@ -289,4 +302,4 @@
     }
   }]);
 
-})(angular);
+}(angular));
