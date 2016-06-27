@@ -53,11 +53,13 @@
     "karma-junit-reporter": "0.3.3",
     "karma-phantomjs-launcher": "0.2.1",
     "load-grunt-tasks": "^3.2.0",
+    "phantomjs": "2.1.7",
     "time-grunt": "^1.2.1"
   },
   "main": "index.js",
+  "engine-strict": true,
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">= 4.2.x"
   },
   "scripts": {
     "test": "grunt test"
