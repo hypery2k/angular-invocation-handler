@@ -82,7 +82,7 @@
     // TODO move to module
     function isFunction(obj) {
       return !!(obj && obj.constructor && obj.call && obj.apply);
-    };
+    }
 
     // Decorate all functions of the service [$delegate] with error handling. This function should be used as decorator
     // function in a call to $provide.decorator().
@@ -123,7 +123,7 @@
               if (ngIHConfig.customErrorHandler) {
                 $injector.get(ngIHConfig.customErrorHandler).resolve(errorDetails, callback);
               } else {
-                callback(errorDetails);
+                return callback(errorDetails);
               }
             }
           },
@@ -313,4 +313,4 @@
     }
   });
 
-})(angular);
+}(angular));

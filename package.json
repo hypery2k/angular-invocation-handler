@@ -28,6 +28,7 @@
   "devDependencies": {
     "angular-mocks": "1.5.7",
     "bower": "1.4.1",
+    "eslint": "2.13.1",
     "grunt": "0.4.5",
     "grunt-autoprefixer": "3.0.3",
     "grunt-banner": "0.4.0",
@@ -53,6 +54,7 @@
     "karma-junit-reporter": "0.3.3",
     "karma-phantomjs-launcher": "0.2.1",
     "load-grunt-tasks": "3.2.0",
+    "nsp": "2.5.0",
     "phantomjs": "2.1.7",
     "time-grunt": "1.2.1"
   },
@@ -62,6 +64,7 @@
     "node": ">= 4.2.x"
   },
   "scripts": {
+    "pretest": "eslint src/*.js && eslint test/*.js && nsp check",
     "test": "grunt test"
   }
 }
