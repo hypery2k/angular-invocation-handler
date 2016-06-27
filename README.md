@@ -1,11 +1,22 @@
 # Angular Invocation Handler
 
-> A module for collecting errors, stack traces and other information globally from within your Angular app
-> e.g. for saving to a remote service or for displaying
-
 [![Build Status](https://travis-ci.org/hypery2k/angular-invocation-handler.svg?branch=master)](https://travis-ci.org/hypery2k/angular-invocation-handler)
 [![Build status](https://ci.appveyor.com/api/projects/status/qbdypq5n7p4x3i78?svg=true)](https://ci.appveyor.com/project/hypery2k/angular-invocation-handler) [![Bower version](https://badge.fury.io/bo/angular-invocation-handler.svg)](http://badge.fury.io/bo/angular-invocation-handler) [![npm version](https://badge.fury.io/js/angular-invocation-handler.svg)](http://badge.fury.io/js/angular-invocation-handler)
  [![Code Climate](https://codeclimate.com/github/hypery2k/angular-invocation-handler/badges/gpa.svg)](https://codeclimate.com/github/hypery2k/angular-invocation-handler) [![ NPM devDependency Status](https://david-dm.org/hypery2k/angular-invocation-handler/dev-status.svg)](https://david-dm.org/hypery2k/angular-invocation-handler#info=devDependencies)
+
+> A module for collecting errors, stack traces and other information globally from within your Angular app
+> e.g. for saving to a remote service or for displaying
+ 
+> Feel free to **donate**
+> 
+> <a href='https://pledgie.com/campaigns/31915'><img alt='Click here to lend your support to: NPM packages and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/31915.png?skin_name=chrome' border='0' ></a>
+> <a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JYG6LVEHB59TL">
+> <img alt="" border="0" src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif"/>
+> </img></a>
+> Or donate [Bitcoins](bitcoin:3NKtxw1SRYgess5ev4Ri54GekoAgkR213D):
+> [![Bitcoin](https://martinreinhardt-online.de/bitcoin.png)](bitcoin:3NKtxw1SRYgess5ev4Ri54GekoAgkR213D)
+> 
+> Also via [greenaddress](https://greenaddress.it/pay/GA3ZPfh7As3Gc2oP6pQ1njxMij88u/)
 
 ## Reasons to use
 It's anyoing to handle all errors in controller and service and also very defective.
