@@ -6,6 +6,9 @@
 
 > A module for collecting errors, stack traces and other information globally from within your Angular app
 > e.g. for saving to a remote service or for displaying
+
+
+[![NPM](https://nodei.co/npm/angular-invocation-handler.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/angular-invocation-handler/)
  
 > Feel free to **donate**
 > 
