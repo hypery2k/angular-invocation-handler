@@ -43,6 +43,12 @@ Install this module:
 ```bash
 bower install angular-invocation-handler --save
 ```
+or via NPM
+
+```bash
+npm install angular-invocation-handler --save
+```
+
 
 Add the dependencies
 
